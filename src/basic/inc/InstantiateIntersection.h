@@ -4,7 +4,7 @@
 // QUESO - a library to support the Quantification of Uncertainty
 // for Estimation, Simulation and Optimization
 //
-// Copyright (C) 2008,2009,2010 The PECOS Development Team
+// Copyright (C) 2008,2009,2010,2011,2012,2013 The PECOS Development Team
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -26,10 +26,25 @@
 //
 //--------------------------------------------------------------------------
 
-#include <queso/Environment.h>
+#ifndef UQ_INSTANTIATE_INTERSECTION_H
+#define UQ_INSTANTIATE_INTERSECTION_H
 
-int main() 
-{
-  QUESO::QUESO_version_print(std::cout);
-  return 0;
-}
+#include <queso/VectorSet.h>
+
+namespace QUESO {
+
+/*!\file InstantiateIntersection.h
+ * \brief A templated method to calculate intersection of two domains (vector spaces).
+ */
+
+//! This method calculates the intersection of \c domain1 and \c domain2.
+/*! It is used, for instance, to calculate the domain of the Posterior PDF, which is 
+ * the intersection of the domain of the Prior PDF and of the likelihood function.*/
+template<class V, class M>
+VectorSet<V,M>* InstantiateIntersection(const VectorSet<V,M>& domain1,
+    const VectorSet<V,M>& domain2);
+
+}  // End namespace QUESO
+
+#endif // UQ_INSTANTIATE_INTERSECTION_H
+

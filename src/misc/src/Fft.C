@@ -4,7 +4,7 @@
 // QUESO - a library to support the Quantification of Uncertainty
 // for Estimation, Simulation and Optimization
 //
-// Copyright (C) 2008,2009,2010 The PECOS Development Team
+// Copyright (C) 2008,2009,2010,2011,2012,2013 The PECOS Development Team
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -26,10 +26,23 @@
 //
 //--------------------------------------------------------------------------
 
-#include <queso/Environment.h>
+#include <queso/Fft.h>
 
-int main() 
+namespace QUESO {
+
+// Constructor-------------------------------------------
+template <class T>
+Fft<T>::Fft(const BaseEnvironment& env)
+  :
+  m_env(env)
 {
-  QUESO::QUESO_version_print(std::cout);
-  return 0;
 }
+// Destructor--------------------------------------------
+template <class T>
+Fft<T>::~Fft()
+{
+}
+
+}  // End namespace QUESO
+
+template class QUESO::Fft<double>;

@@ -4,7 +4,7 @@
 // QUESO - a library to support the Quantification of Uncertainty
 // for Estimation, Simulation and Optimization
 //
-// Copyright (C) 2008,2009,2010 The PECOS Development Team
+// Copyright (C) 2008,2009,2010,2011,2012,2013 The PECOS Development Team
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -26,10 +26,64 @@
 //
 //--------------------------------------------------------------------------
 
-#include <queso/Environment.h>
+#include <queso/RngBase.h>
+#include <mpi.h>
 
-int main() 
+namespace QUESO {
+
+RngBase::RngBase()
+  :
+  m_seed     (0),
+  m_worldRank(UQ_UNAVAILABLE_RANK)
 {
-  QUESO::QUESO_version_print(std::cout);
-  return 0;
+  UQ_FATAL_TEST_MACRO(true,
+                      m_worldRank,
+                      "RngBase::constructor(), default",
+                      "should not be used by user");
 }
+
+RngBase::RngBase(int seed, int worldRank)
+  :
+  m_seed     (seed),
+  m_worldRank(worldRank)
+{
+  privateResetSeed();
+}
+
+RngBase::~RngBase()
+{
+}
+
+int
+RngBase::seed() const
+{
+  return m_seed;
+}
+
+void
+RngBase::resetSeed(int newSeed)
+{
+  m_seed = newSeed;
+  privateResetSeed();
+  return;
+}
+
+void
+RngBase::privateResetSeed()
+{
+  if (m_seed >= 0) {
+    // Do nothing
+  }
+  else if (m_seed < 0) {
+    m_seed = (-m_seed+m_worldRank);
+  }
+  //else {
+  //  struct timeval timevalNow;
+  //  /*iRC = */gettimeofday(&timevalNow, NULL);
+  //  m_seed = (int) timevalNow.tv_usec;
+  //}
+
+  return;
+}
+
+}  // End namespace QUESO

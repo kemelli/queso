@@ -4,7 +4,7 @@
 // QUESO - a library to support the Quantification of Uncertainty
 // for Estimation, Simulation and Optimization
 //
-// Copyright (C) 2008,2009,2010 The PECOS Development Team
+// Copyright (C) 2008,2009,2010,2011,2012,2013 The PECOS Development Team
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -26,10 +26,49 @@
 //
 //--------------------------------------------------------------------------
 
-#include <queso/Environment.h>
+#include <queso/VectorSpace.h>
 
-int main() 
+#ifdef QUESO_HAS_TRILINOS
+
+#include <queso/TeuchosMatrix.h>
+
+namespace QUESO {
+
+template <>
+Map*
+VectorSpace<TeuchosVector, TeuchosMatrix>::newMap()
 {
-  QUESO::QUESO_version_print(std::cout);
-  return 0;
+  return new Map(m_dimGlobal,0,m_env.selfComm());
 }
+
+template<>
+TeuchosVector*
+VectorSpace<TeuchosVector,TeuchosMatrix>::newVector() const
+{
+  return new TeuchosVector(m_env,*m_map);
+}
+
+template<>
+TeuchosVector*
+VectorSpace<TeuchosVector,TeuchosMatrix>::newVector(double value) const
+{
+  return new TeuchosVector(m_env,*m_map,value);
+}
+
+template<>
+TeuchosMatrix*
+VectorSpace<TeuchosVector,TeuchosMatrix>::newMatrix() const
+{
+  return new TeuchosMatrix(m_env,*m_map,this->dimGlobal());
+}
+
+template<>
+TeuchosMatrix*
+VectorSpace<TeuchosVector,TeuchosMatrix>::newDiagMatrix(double diagValue) const
+{
+  return new TeuchosMatrix(m_env,*m_map,diagValue);
+}
+
+}  // End namespace QUESO
+
+#endif // ifdef QUESO_HAS_TRILINOS

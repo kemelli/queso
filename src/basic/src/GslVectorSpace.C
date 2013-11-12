@@ -4,7 +4,7 @@
 // QUESO - a library to support the Quantification of Uncertainty
 // for Estimation, Simulation and Optimization
 //
-// Copyright (C) 2008,2009,2010 The PECOS Development Team
+// Copyright (C) 2008,2009,2010,2011,2012,2013 The PECOS Development Team
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -22,14 +22,48 @@
 //
 //-----------------------------------------------------------------------el-
 // 
-// $Id$
+// $Id:$
 //
 //--------------------------------------------------------------------------
 
-#include <queso/Environment.h>
+#include <queso/VectorSpace.h>
+#include <queso/GslMatrix.h>
 
-int main() 
+namespace QUESO {
+
+template <>
+Map*
+VectorSpace<GslVector, GslMatrix>::newMap()
 {
-  QUESO::QUESO_version_print(std::cout);
-  return 0;
+  return new Map(m_dimGlobal,0,m_env.selfComm());
 }
+
+template<>
+GslVector*
+VectorSpace<GslVector,GslMatrix>::newVector() const
+{
+  return new GslVector(m_env,*m_map);
+}
+
+template<>
+GslVector*
+VectorSpace<GslVector,GslMatrix>::newVector(double value) const
+{
+  return new GslVector(m_env,*m_map,value);
+}
+
+template<>
+GslMatrix*
+VectorSpace<GslVector,GslMatrix>::newMatrix() const
+{
+  return new GslMatrix(m_env,*m_map,this->dimGlobal());
+}
+
+template<>
+GslMatrix*
+VectorSpace<GslVector,GslMatrix>::newDiagMatrix(double diagValue) const
+{
+  return new GslMatrix(m_env,*m_map,diagValue);
+}
+
+}  // End namespace QUESO

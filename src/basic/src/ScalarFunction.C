@@ -4,7 +4,7 @@
 // QUESO - a library to support the Quantification of Uncertainty
 // for Estimation, Simulation and Optimization
 //
-// Copyright (C) 2008,2009,2010 The PECOS Development Team
+// Copyright (C) 2008,2009,2010,2011,2012,2013 The PECOS Development Team
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -26,10 +26,36 @@
 //
 //--------------------------------------------------------------------------
 
-#include <queso/Environment.h>
+#include <queso/VectorSet.h>
+#include <queso/ScalarFunction.h>
+#include <queso/GslVector.h>
+#include <queso/GslMatrix.h>
 
-int main() 
+namespace QUESO {
+
+// Default constructor
+template<class V,class M>
+BaseScalarFunction<V,M>::BaseScalarFunction(const char* prefix,
+    const VectorSet<V,M>& domainSet)
+  : m_env(domainSet.env()),
+    m_prefix((std::string)(prefix)+"func_"),
+    m_domainSet(domainSet)
 {
-  QUESO::QUESO_version_print(std::cout);
-  return 0;
 }
+
+// Destructor
+template<class V,class M>
+BaseScalarFunction<V,M>::~BaseScalarFunction()
+{
+}
+
+// Math methods
+template<class V,class M>
+const VectorSet<V,M>& BaseScalarFunction<V,M>::domainSet() const
+{
+  return m_domainSet;
+}
+
+}  // End namespace QUESO
+
+template class QUESO::BaseScalarFunction<QUESO::GslVector, QUESO::GslMatrix>;

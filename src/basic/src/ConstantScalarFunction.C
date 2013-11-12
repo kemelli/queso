@@ -4,7 +4,7 @@
 // QUESO - a library to support the Quantification of Uncertainty
 // for Estimation, Simulation and Optimization
 //
-// Copyright (C) 2008,2009,2010 The PECOS Development Team
+// Copyright (C) 2008,2009,2010,2011,2012,2013 The PECOS Development Team
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the Version 2.1 GNU Lesser General
@@ -26,10 +26,50 @@
 //
 //--------------------------------------------------------------------------
 
+#include <queso/VectorSet.h>
+#include <queso/VectorSubset.h>
 #include <queso/Environment.h>
+#include <queso/Defines.h>
+#include <queso/ConstantScalarFunction.h>
 
-int main() 
+namespace QUESO {
+
+// Default constructor
+template<class V,class M>
+ConstantScalarFunction<V,M>::ConstantScalarFunction(const char* prefix,
+    const VectorSet<V,M>& domainSet,
+    double constantValue)
+  : BaseScalarFunction<V,M>(((std::string)(prefix)+"gen").c_str(), domainSet),
+    m_constantValue(constantValue)
 {
-  QUESO::QUESO_version_print(std::cout);
-  return 0;
 }
+
+// Destructor
+template<class V,class M>
+ConstantScalarFunction<V,M>::~ConstantScalarFunction()
+{
+}
+
+// Math methods
+template<class V,class M>
+double ConstantScalarFunction<V,M>::actualValue(const V& domainVector,
+    const V* domainDirection,
+    V* gradVector,
+    M* hessianMatrix,
+    V* hessianEffect) const
+{
+  return m_constantValue;
+}
+
+
+template<class V,class M>
+double ConstantScalarFunction<V,M>::lnValue(const V& domainVector,
+    const V* domainDirection,
+    V* gradVector,
+    M* hessianMatrix,
+    V* hessianEffect) const
+{
+  return 0.;
+}
+
+}  // End namespace QUESO
